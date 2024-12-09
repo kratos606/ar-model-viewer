@@ -24,7 +24,7 @@ A web-based AR application that displays 3D models (GLB/GLTF) in augmented reali
 
 1. Clone this repository:
 ```bash
-git clone [your-repo-url]
+git clone https://github.com/kratos606/ar-model-viewer.git
 cd ar-model-viewer
 ```
 
