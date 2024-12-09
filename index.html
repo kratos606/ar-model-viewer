@@ -55,10 +55,11 @@
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
-        environment-image="neutral"
+        environment-image="legacy"
+        skybox-image="legacy"
         shadow-intensity="1"
         shadow-softness="1"
-        exposure="1"
+        exposure="1.2"
         auto-rotate
         interaction-prompt="auto"
         auto-rotate-delay="0"
@@ -71,9 +72,11 @@
         bounds="tight"
         dimension-scale="100cm 200cm 30cm"
         ar-placement="floor"
-        ar-scale="fixed"
         placement-mode="automatic"
-        style="background-color: #ffffff;">
+        shadow-root-opacity="0.8"
+        environment-intensity="1.5"
+        tone-mapping="commerce"
+        style="background-color: #f8f8f8;">
         
         <div class="progress-bar hide" slot="progress-bar">
             <div class="update-bar"></div>
