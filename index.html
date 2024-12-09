@@ -70,6 +70,9 @@
         max-field-of-view="45deg"
         bounds="tight"
         dimension-scale="100cm 200cm 30cm"
+        ar-placement="floor"
+        ar-scale="fixed"
+        placement-mode="automatic"
         style="background-color: #ffffff;">
         
         <div class="progress-bar hide" slot="progress-bar">
@@ -90,6 +93,20 @@
         const modelViewer = document.querySelector('model-viewer');
         const toggleViewBtn = document.getElementById('toggleView');
         const resetPositionBtn = document.getElementById('resetPosition');
+
+        // Auto-place the model when a surface is found
+        modelViewer.addEventListener('ar-status', (event) => {
+            if (event.detail.status === 'session-started') {
+                modelViewer.activateAR();
+            }
+        });
+
+        // Handle model placement
+        modelViewer.addEventListener('ar-tracking', (event) => {
+            if (event.detail.status === 'tracking') {
+                modelViewer.setAttribute('placement-mode', 'automatic');
+            }
+        });
 
         // Toggle between AR and normal view
         toggleViewBtn.addEventListener('click', () => {
