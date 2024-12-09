@@ -9,8 +9,9 @@ A web-based AR application that displays 3D models (GLB/GLTF) in augmented reali
 - Model rotation and zoom capabilities
 - Real-world lighting integration
 - Gesture support for scaling
-- Toggle between standard 3D view and AR mode
+- Automatic model placement
 - Predefined 3D space dimensions (100cm x 200cm x 30cm)
+- High-quality HDR lighting and shadows
 
 ## Prerequisites
 
@@ -27,15 +28,15 @@ git clone [your-repo-url]
 cd ar-model-viewer
 ```
 
-2. Place your .glb/.gltf model in the `assets` folder and name it `sample-model.glb`
-   - For iOS support, also include a .usdz version named `sample-model.usdz`
+2. Place your .glb/.gltf model in the `assets` folder
+3. Place your HDR environment map in the `assets` folder
 
-3. Serve the project using a local web server. You can use Python's built-in server:
+4. Serve the project using a local web server. You can use Python's built-in server:
 ```bash
 python -m http.server 8000
 ```
 
-4. Access the application:
+5. Access the application:
    - Local: http://localhost:8000
    - On mobile device: http://[your-local-ip]:8000
 
@@ -43,9 +44,9 @@ python -m http.server 8000
 
 1. Open the application on your mobile device
 2. Grant camera permissions when prompted
-3. Click the "Activate AR" button
+3. Click the "AR View" button
 4. Point your camera at a flat surface
-5. Tap the screen to place the 3D model
+5. The model will automatically place itself
 6. Use gestures to:
    - Pinch to scale
    - Drag to rotate
@@ -53,14 +54,16 @@ python -m http.server 8000
 
 ## Controls
 
-- Toggle View Mode: Switch between AR and standard 3D view
-- Reset Position: Return model to default position and orientation
+- AR View: Enter AR mode with real-world placement
+- Reset: Return model to default position and orientation
 
 ## Technical Details
 
 - Built using `<model-viewer>` web component
-- Supports GLB/GLTF and USDZ formats
+- Supports GLB/GLTF formats
 - Implements WebXR for AR functionality
+- Custom HDR environment mapping
+- Dynamic shadow and reflection system
 - Constrained to specific dimensions (100cm x 200cm x 30cm)
 
 ## Troubleshooting
@@ -71,10 +74,10 @@ python -m http.server 8000
    - Grant camera permissions
    - Update your browser to the latest version
 
-2. If model appears too large/small:
-   - Use the scaling gestures to adjust
-   - Check model's original dimensions
-   - Verify dimension-scale attribute in HTML
+2. If model appears too dark or has incorrect lighting:
+   - Check that the HDR environment map is loaded correctly
+   - Verify the model's materials and textures
+   - Adjust exposure and environment intensity in the model-viewer settings
 
 ## License
 

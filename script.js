@@ -1,81 +1,80 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const modelViewer = document.querySelector('model-viewer');
-    const toggleViewBtn = document.getElementById('toggleView');
-    const resetPositionBtn = document.getElementById('resetPosition');
+class ARModelViewer {
+    constructor() {
+        this.modelViewer = document.querySelector('model-viewer');
+        this.resetPositionBtn = document.getElementById('resetPosition');
+        this.initializeEventListeners();
+    }
 
-    // Auto-place the model when a surface is found
-    modelViewer.addEventListener('ar-status', (event) => {
+    initializeEventListeners() {
+        this.modelViewer.addEventListener('ar-status', this.handleARStatus.bind(this));
+        this.modelViewer.addEventListener('ar-tracking', this.handleARTracking.bind(this));
+        this.modelViewer.addEventListener('camera-change', this.handleCameraChange.bind(this));
+        this.modelViewer.addEventListener('load', this.handleModelLoad.bind(this));
+        this.resetPositionBtn.addEventListener('click', this.resetPosition.bind(this));
+        this.initializeGestureHandling();
+        this.modelViewer.addEventListener('progress', this.handleProgress.bind(this));
+    }
+
+    handleARStatus(event) {
         if (event.detail.status === 'session-started') {
-            modelViewer.activateAR();
+            this.modelViewer.activateAR();
         }
-    });
+    }
 
-    // Handle model placement
-    modelViewer.addEventListener('ar-tracking', (event) => {
+    handleARTracking(event) {
         if (event.detail.status === 'tracking') {
-            modelViewer.setAttribute('placement-mode', 'automatic');
-            // Adjust shadow intensity based on environment lighting
-            if (modelViewer.arScale === 'fixed') {
-                modelViewer.shadowIntensity = 1;
-                modelViewer.shadowSoftness = 1;
-                modelViewer.exposure = 1.2;
-            }
+            this.modelViewer.setAttribute('placement-mode', 'automatic');
+            this.updateLightingParameters();
         }
-    });
+    }
 
-    // Handle environment lighting changes
-    modelViewer.addEventListener('camera-change', () => {
-        const lightingIntensity = modelViewer.environmentIntensity;
-        // Adjust shadow intensity based on environment lighting
-        modelViewer.shadowIntensity = Math.min(1, lightingIntensity * 1.2);
-        modelViewer.shadowSoftness = Math.max(0.5, lightingIntensity * 0.8);
-    });
+    handleCameraChange() {
+        const lightingIntensity = this.modelViewer.environmentIntensity;
+        this.modelViewer.shadowIntensity = Math.min(1, lightingIntensity * 1.2);
+        this.modelViewer.shadowSoftness = Math.max(0.5, lightingIntensity * 0.8);
+    }
 
-    // Toggle between AR and normal view
-    toggleViewBtn.addEventListener('click', () => {
-        if (modelViewer.hasAttribute('ar')) {
-            modelViewer.removeAttribute('ar');
-            toggleViewBtn.textContent = 'Enable AR';
-        } else {
-            modelViewer.setAttribute('ar', '');
-            toggleViewBtn.textContent = 'Disable AR';
-        }
-    });
-
-    // Reset position
-    resetPositionBtn.addEventListener('click', () => {
-        modelViewer.cameraOrbit = '0deg 75deg 105%';
-        modelViewer.cameraTarget = '0m 0m 0m';
-    });
-
-    // Handle loading events
-    modelViewer.addEventListener('load', () => {
-        const center = modelViewer.getCameraTarget();
-        const size = modelViewer.getDimensions();
+    handleModelLoad() {
+        const center = this.modelViewer.getCameraTarget();
+        const size = this.modelViewer.getDimensions();
         console.log('Model loaded:', { center, size });
-    });
+    }
 
-    // Add gesture handling for scaling
-    let startX, startY;
-    modelViewer.addEventListener('touchstart', (event) => {
-        if (event.touches.length === 2) {
-            startX = event.touches[0].clientX - event.touches[1].clientX;
-            startY = event.touches[0].clientY - event.touches[1].clientY;
-        }
-    });
+    resetPosition() {
+        this.modelViewer.cameraOrbit = '0deg 75deg 105%';
+        this.modelViewer.cameraTarget = '0m 0m 0m';
+    }
 
-    modelViewer.addEventListener('touchmove', (event) => {
-        if (event.touches.length === 2) {
-            const currentX = event.touches[0].clientX - event.touches[1].clientX;
-            const currentY = event.touches[0].clientY - event.touches[1].clientY;
-            const scaleChange = (Math.hypot(currentX, currentY) - Math.hypot(startX, startY)) * 0.01;
-            modelViewer.scale = `${1 + scaleChange} ${1 + scaleChange} ${1 + scaleChange}`;
-        }
-    });
+    updateLightingParameters() {
+        this.modelViewer.shadowIntensity = 1;
+        this.modelViewer.shadowSoftness = 1;
+        this.modelViewer.exposure = 1.2;
+    }
 
-    // Progress bar handling
-    modelViewer.addEventListener('progress', (event) => {
+    initializeGestureHandling() {
+        let startX, startY;
+
+        this.modelViewer.addEventListener('touchstart', (event) => {
+            if (event.touches.length === 2) {
+                startX = event.touches[0].clientX - event.touches[1].clientX;
+                startY = event.touches[0].clientY - event.touches[1].clientY;
+            }
+        });
+
+        this.modelViewer.addEventListener('touchmove', (event) => {
+            if (event.touches.length === 2) {
+                const currentX = event.touches[0].clientX - event.touches[1].clientX;
+                const currentY = event.touches[0].clientY - event.touches[1].clientY;
+                const scaleChange = (Math.hypot(currentX, currentY) - Math.hypot(startX, startY)) * 0.01;
+                this.modelViewer.scale = `${1 + scaleChange} ${1 + scaleChange} ${1 + scaleChange}`;
+            }
+        });
+    }
+
+    handleProgress(event) {
         const progressBar = document.querySelector('.update-bar');
         progressBar.style.width = `${event.detail.totalProgress * 100}%`;
-    });
-});
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => new ARModelViewer());

@@ -4,50 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AR Model Viewer</title>
-    <!-- Import the Model Viewer library -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #f0f0f0;
-        }
-
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            background: #2196F3;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #1976D2;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" type="module" defer></script>
 </head>
 <body>
     <model-viewer
@@ -55,11 +14,11 @@
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
-        environment-image="legacy"
-        skybox-image="legacy"
+        environment-image="assets/brown_photostudio_02_2k.hdr"
+        skybox-image="assets/brown_photostudio_02_2k.hdr"
         shadow-intensity="1"
         shadow-softness="1"
-        exposure="1.2"
+        exposure="1"
         auto-rotate
         interaction-prompt="auto"
         auto-rotate-delay="0"
@@ -74,27 +33,19 @@
         ar-placement="floor"
         placement-mode="automatic"
         shadow-root-opacity="0.8"
-        environment-intensity="1.5"
+        environment-intensity="1"
         tone-mapping="commerce"
-        style="background-color: #f8f8f8;">
-        
-        <div class="progress-bar hide" slot="progress-bar">
+        style="background-color: #f8f8f8">
+        <div class="progress-bar" slot="progress-bar">
             <div class="update-bar"></div>
         </div>
-        
-        <button slot="ar-button" style="background-color: white; border-radius: 4px; border: none; position: absolute; top: 16px; right: 16px;">
-            👋 Activate AR
-        </button>
+        <button slot="ar-button" class="ar-button">AR View</button>
     </model-viewer>
-
     <div class="controls">
-        <button id="toggleView">Toggle View Mode</button>
-        <button id="resetPosition">Reset Position</button>
+        <button id="resetPosition">Reset</button>
     </div>
-
     <script>
         const modelViewer = document.querySelector('model-viewer');
-        const toggleViewBtn = document.getElementById('toggleView');
         const resetPositionBtn = document.getElementById('resetPosition');
 
         // Auto-place the model when a surface is found
@@ -108,17 +59,6 @@
         modelViewer.addEventListener('ar-tracking', (event) => {
             if (event.detail.status === 'tracking') {
                 modelViewer.setAttribute('placement-mode', 'automatic');
-            }
-        });
-
-        // Toggle between AR and normal view
-        toggleViewBtn.addEventListener('click', () => {
-            if (modelViewer.hasAttribute('ar')) {
-                modelViewer.removeAttribute('ar');
-                toggleViewBtn.textContent = 'Enable AR';
-            } else {
-                modelViewer.setAttribute('ar', '');
-                toggleViewBtn.textContent = 'Disable AR';
             }
         });
 
