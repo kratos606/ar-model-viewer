@@ -1,3 +1,5 @@
+import './style.css'
+
 class ARModelViewer {
     constructor() {
         this.modelViewer = document.querySelector('model-viewer');
